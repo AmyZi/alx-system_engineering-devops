@@ -1,17 +1,7 @@
 #!/usr/bin/env bash
-
-# Install nginx
+# Install nginx and start it
 apt-get -y install nginx
-
-# Start nginx
 service nginx start
-
-# Allow traffic on port 80 for nginx
 ufw allow 'Nginx HTTP'
-
-# Create a custom page with "Hello World!"
-echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html
-
-# Restart nginx
+echo "Hello World!\n" | sudo tee /var/www/html/index.nginx-debian.html
 service nginx restart
-
