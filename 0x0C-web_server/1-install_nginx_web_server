@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
-
 # Install nginx and start it
 apt-get -y install nginx
 service nginx start
 ufw allow 'Nginx HTTP'
-
-# Create index.nginx-debian.html file with "Hello World!" content
 echo "Hello World!\n" | sudo tee /var/www/html/index.nginx-debian.html
-
-# Print "Hello World!" to the standard output
-echo "Hello World!"
-
+service nginx restart
