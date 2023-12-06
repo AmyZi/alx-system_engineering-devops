@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Update system and install required packages
+sudo apt-get update
+sudo apt-get -y install software-properties-common
+
+# Add HAProxy 1.8 PPA
+sudo add-apt-repository -y ppa:vbernat/haproxy-1.8
+sudo apt-get update
+
+# Install HAProxy 1.8
+sudo apt-get -y install haproxy=1.8.*
+
+# Configure HAProxy
+sudo sed -i '/errorfile 504/a listen 344585-lb-01' /etc/haproxy/haproxy.cfg
+sudo sed -i '/listen 344585-lb-01/a         bind :80' /etc/haproxy/haproxy.cfg
+sudo sed -i '/bind :80/a         mode http' /etc/haproxy/haproxy.cfg
+sudo sed -i '/mode http/a         server 344585-web-01 54.165.196.5:80 check' /etc/haproxy/haproxy.cfg
+sudo sed -i '/server 344585-web-01 54.165.196.5:80 check/a         server 344585-web-02 REPLACE_WITH_IP_2:80 check' /etc/haproxy/haproxy.cfg
+
+# Enable HAProxy
+sudo sed -i '/#EXTRAOPTS="-de -m 16"/a ENABLED=1' /etc/default/haproxy
+
+# Start HAProxy service
+sudo service haproxy start
