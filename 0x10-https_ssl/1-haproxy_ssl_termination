@@ -1,5 +1,4 @@
-
-bal
+global
         log /dev/log    local0
         log /dev/log    local1 notice
         chroot /var/lib/haproxy
@@ -36,10 +35,13 @@ defaults
 
 frontend http_front
         bind *:80
-        bind *:443 ssl crt /etc/haproxy/certs/www.aminaidris.tech.pem
-        redirect scheme https code 301 if !{ ssl_fc }
-        default_backend http_back
+        bind *:443 ssl crt /etc/letsencrypt/live/www.aminaidris.tech/www.aminaidris.tech.pem
+        http-request add-header X-Forwarded-Proto http
+        http-request redirect scheme https code 301 if !{ ssl_fc }
+        use_backend http_back
 
 backend http_back
-    server 344585-web-01 54.173.93.73:8080 check
-    server 344585-web-02 34.204.101.89:8080 check
+        redirect scheme https code 301 if !{ ssl_fc }
+        balance roundrobin
+        server 344585-web-01 54.173.93.73:80 check
+        server 344585-web-02 34.204.101.89:80 check
